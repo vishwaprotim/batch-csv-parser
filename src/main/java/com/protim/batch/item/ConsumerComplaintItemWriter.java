@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.Chunk;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 
@@ -17,7 +18,7 @@ public class ConsumerComplaintItemWriter implements ItemWriter<ConsumerComplaint
     ConsumerComplaintRepository repository;
 
     @Override
-    public void write(Chunk<? extends ConsumerComplaint> chunk) throws Exception {
+    public void write(@NonNull Chunk<? extends ConsumerComplaint> chunk) throws Exception {
         repository.saveAll(chunk);
     }
 }

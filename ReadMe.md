@@ -79,3 +79,70 @@ Since batch details are persisted, Spring by default does not allow a step/job w
 As per Spring Docs,
 
 "When possible, we recommend that you use the -spring variants for your logging configuration (for example, logback-spring.xml rather than logback.xml). If you use standard configuration locations, Spring cannot completely control log initialization."
+
+### Database
+This batch uses postgres DB. To use postgres via docker, refer to this [wiki](https://github.com/vishwaprotim/microservices/wiki/Postgresql-DB-with-Docker)
+
+### Containerization
+- To build  and push a docker image, run this command in the project root directory:
+```bash
+docker build -t=<your-docker-id>/csv-parser:latest .
+# Check the image created
+docker images
+# You can push it to your remote Docker repository
+docker push <your-docker-id>/csv-parser
+```
+
+### Running this batch in K8
+To run this batch in Kubernetes, follow the below steps:
+
+- Install minikube from [here](https://minikube.sigs.k8s.io/docs/start/?arch=%2Fmacos%2Farm64%2Fstable%2Fbinary+download).
+- Start minikube
+```bash
+minikube start
+```
+- In a separate terminal T2, mount the input directory from host machine to minikube. This process must be kept running to ensure continuous file access.
+```bash
+# minikube mount /path/to/src/main/resources/input:/vm-path/
+minikube mount /Users/protim/projects/batch-csv-parser/src/main/resources/input/:/data/
+```
+- Now go to terminal 1 and build your project, and create a docker image. After that, load this image to minikube.
+```bash
+./gradlew build
+docker build -t csv-parser:1.0 .
+minikube image load csv-parser:1.0
+```
+- Apply the yaml configurations to create services and deployments
+```bash
+cd src/main/resources/
+kubectl apply -f postgres-credentials.yaml
+# verify the secrest created
+kubectl get secrets
+
+kubectl apply -f postgres-config.yaml
+# verify configmap
+kubectl get configmaps
+
+kubectl apply -f postgres-deployment.yaml
+# Verify service, PVC and deployment created
+kubectl get service
+kubectl get persistentvolumeclaim
+kubectl get deployment
+
+# Check the pods created
+kubectl get pods
+
+# In case you want to delete older deployments, run this
+kubectl delete deployment csv-parser
+
+# Create deployment for csv-parser
+kubectl apply -f deployment.yaml
+
+# You can check logs from here. The '-f' option stands for follow, which streams logs in real time
+kubectl logs -f <pod-name>
+```
+
+
+
+
+

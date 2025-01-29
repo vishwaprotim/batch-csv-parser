@@ -4,7 +4,8 @@ spring:
   application.name: CSV-Parser
   batch:
     chunk.size: 500
-    input: "file:src/main/resources/input/test.csv"
+    #Set below field to "file:src/main/resources/input/test.csv" for your local non-K8 environment
+    input: "file:/data/test.csv"
     jdbc.initialize-schema: always
     job.enabled: false #setting this to false as we are running from Command Line Runner
     retry.limit: 3
@@ -16,9 +17,10 @@ spring:
     properties:
       hibernate.generate_statistics: false
   datasource:
-    url: jdbc:postgresql://localhost:5432/postgres
-    username: postgres
-    password: password
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://${DB_HOST:localhost}:5432/${DB_NAME:postgres}
+    username: ${POSTGRES_USER:postgres}
+    password: ${POSTGRES_PASSWORD:password}
     initialization-mode: always
     initialize: true
 
