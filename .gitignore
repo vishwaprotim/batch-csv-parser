@@ -38,3 +38,8 @@ out/
 
 ### VS Code ###
 .vscode/
+
+
+/log
+/target
+/.DS_Store
