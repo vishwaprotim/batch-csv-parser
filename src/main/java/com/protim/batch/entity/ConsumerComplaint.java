@@ -12,6 +12,10 @@ import java.time.LocalDate;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+// TODO : Which one to choose and why,
+// also step listener, job listeners, read skip listener,
+// write transaction listener,
+// CSV record restart listener
 public class ConsumerComplaint {
 
     private LocalDate dateReceived;
@@ -19,11 +23,11 @@ public class ConsumerComplaint {
     private String subProduct;
     private String issue;
     private String subIssue;
-    @Column(columnDefinition = "TEXT") // TODO : Which one to choose and why, also step listener, job listeners, read
-                                       // skip listener, write transaction listener, CSV record restart listener
+    @Column(columnDefinition = "TEXT")
+    // This is a large text. Default Varchar(255) will not suffice. Hence, we use
+    // LOB
     @Lob
-    private String consumerComplaintNarrative; // This is a large text. Default Varchar(255) will not suffice. Hence, we
-                                               // use LOB
+    private String consumerComplaintNarrative;
     private String companyPublicResponse;
     private String company;
     private String state;
